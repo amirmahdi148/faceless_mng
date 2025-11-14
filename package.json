@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "dotenv": "^17.2.3",
+    "grammy": "^1.38.3",
+    "neondatabase": "^0.0.1-security",
+    "node-cron": "^4.2.1",
+
+    "pg": "^8.16.3"
+  },
+  "type": "module"
+}
