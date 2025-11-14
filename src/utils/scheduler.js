@@ -20,6 +20,9 @@ async function startChannelScheduler(channel) {
       console.log(`🚀 Running job for ${channel_name}...`);
 
       const searchRes = await googleResult(channel_type);
+      if (!searchRes || !searchRes.length) {
+        console.log("نتیجه ای پیدا نشد")
+      }
       const formatted = searchRes
         .slice(0, 20)
         .map(r => `🔗 ${r.title}\n${r.link}\n${r.snippet}`)
