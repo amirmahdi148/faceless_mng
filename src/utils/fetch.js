@@ -22,7 +22,7 @@ export async function fetcher(query) {
 
 
   const body = {
-    model: 'google/gemini-2.0-flash-exp:free',
+    model: 'deepseek/deepseek-chat-v3-0324:free',
     stream: false,
     messages: [
       {
@@ -43,7 +43,7 @@ export async function fetcher(query) {
   });
 
   const data = await res.json();
-  console.log("response", data);
+
 
   return data.choices[0].message.content;
 }
@@ -52,9 +52,9 @@ export async function fetcher(query) {
 export async function googleResult(query) {
   const key = process.env.GOOGLE_API_KEY;
   const cx = process.env.GOOGLE_CX;
-  console.log("before fetching result");
+
   const url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${cx}&q=${encodeURIComponent(query)}`;
-  console.log("after fetching result");
+
   const res = await fetch(url);
   const data = await res.json();
 
