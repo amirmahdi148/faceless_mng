@@ -12,6 +12,7 @@ import express from 'express'
 export const bot = new Bot(BOT_TOKEN);
 // میدل‌ور لاگر برای لاگ کردن پیام‌ها
 bot.use(logger);
+await bot.init();
 const app = express();
 // دستورات اصلی
 bot.command('start', startCommand);
