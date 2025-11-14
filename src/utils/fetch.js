@@ -51,9 +51,9 @@ export async function fetcher(query) {
 export async function googleResult(query) {
   const key = process.env.GOOGLE_API_KEY;
   const cx = process.env.GOOGLE_CX;
-
+  console.log("before fetching result");
   const url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${cx}&q=${encodeURIComponent(query)}`;
-
+  console.log("after fetching result");
   const res = await fetch(url);
   const data = await res.json();
 
