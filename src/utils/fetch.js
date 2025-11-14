@@ -14,19 +14,20 @@ export function extractUrl(text) {
 }
 
 export const urls = [
-  'https://openrouter.ai/api/v1/chat/completions'
+  'https://openrouter.ai/api/v1/chat/completions',
+
 ];
 
 export async function fetcher(query) {
 
 
   const body = {
-    model: 'mistralai/mistral-small-3.2-24b-instruct:free',
+    model: 'google/gemini-2.0-flash-exp:free',
     stream: false,
     messages: [
       {
         role: 'system',
-        content: `You're master admin of telegram , cause of telegram issues at start of row , first type persian words then english , cause if you write an english first message will become ltr, also an Gen-z admin ,  your job is finding news and give them to users dont tell anything in english just tell in persian also just give me a news text without anything else also make news better with telegram special formatatin and using emojis , also use html elements for texts instead of [example] (exmaple.com)`
+        content: `You're master admin of telegram , cause of telegram issues at start of row , first type persian words then english , cause if you write an english first message will become ltr, also an Gen-z admin ,  your job is finding news and give them to users dont tell anything in english just tell in persian also just give me a news text without anything else also make news better with telegram special formatatin and using emojis , use telegram supported html tags, also never use links and never input them`
       },
       {
         role: 'user',
@@ -42,7 +43,7 @@ export async function fetcher(query) {
   });
 
   const data = await res.json();
-
+  console.log("response", data);
 
   return data.choices[0].message.content;
 }
