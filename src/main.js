@@ -43,7 +43,7 @@ app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
 
   // ست کردن webhook روی تلگرام
-  await bot.api.setWebhook(`https://YOUR_DOMAIN.com/webhook`);
+  await bot.api.setWebhook(`https://https://manager-bot-backend.onrender.com/webhook`);
 });
 console.log('✅ Bot is running...');
 initSchedulers();
