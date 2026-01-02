@@ -40,7 +40,7 @@ export async function initSchedulers() {
         await upsertChannelScheduler(channel);
     }
 
-    console.log("✅ All schedulers initialized");
+    logger.log("✅ All schedulers initialized");
 }
 
 /* ──────────────────────────────── */
@@ -74,7 +74,7 @@ export async function upsertChannelScheduler(channel) {
         }
     );
 
-    console.log(`⏳ Scheduler set: ${channel_name} → ${cron}`);
+    logger.info(`⏳ Scheduler set: ${channel_name} → ${cron}`);
 }
 
 /* ──────────────────────────────── */
@@ -82,7 +82,7 @@ export async function upsertChannelScheduler(channel) {
 /* ──────────────────────────────── */
 export async function removeChannelScheduler(channel_name) {
     await channelQueue.removeJobScheduler(channel_name);
-    console.log(`🗑 Scheduler removed: ${channel_name}`);
+    logger.warn(`🗑 Scheduler removed: ${channel_name}`);
 }
 
 /* ──────────────────────────────── */
@@ -99,14 +99,14 @@ const worker = new Worker(
         const locked = await redis.setnx(lockKey, "1");
 
         if (locked === 0) {
-            console.log(`⛔ Duplicate job blocked: ${channel_name}`);
+            logger.error(`Duplicate job blocked: ${channel_name}`);
             return;
         }
 
 // TTL برای fail-safe
         await redis.expire(lockKey, 60);
 
-        console.log(`🚀 Running job for ${channel_name}`);
+        logger.log(`🚀 Running job for ${channel_name}`);
 
         const searchRes = await googleResult(channel_type);
         if (!searchRes) throw new Error("Google fetch failed");
@@ -127,7 +127,7 @@ const worker = new Worker(
             parse_mode: "HTML",
         });
 
-        console.log(`🎉 Sent to ${channel_name}`);
+        logger.log(`🎉 Sent to ${channel_name}`);
     },
     { connection: redis }
 );
@@ -149,7 +149,7 @@ worker.on("failed", async (job, err) => {
     ];
 
     if (deadErrors.some((e) => err.message.toLowerCase().includes(e))) {
-        console.log(`🗑 Removing dead channel: ${channel_name}`);
+        logger.warn(`🗑 Removing dead channel: ${channel_name}`);
 
         await sql.query(
             `DELETE FROM channels WHERE channel_name = $1`,
@@ -167,7 +167,7 @@ export async function startChannelListener() {
     const client = await sql.connect();
 
     await client.query("LISTEN channels_changed");
-    console.log("👂 Listening to channels_changed");
+    logger.info("👂 Listening to channels_changed");
 
     client.on("notification", async (msg) => {
         const payload = JSON.parse(msg.payload);
@@ -188,7 +188,7 @@ export async function startChannelListener() {
 
             if (rows.length) {
                 await upsertChannelScheduler(rows[0]);
-                console.log(`♻️ Rescheduled: ${channel_name}`);
+                logger.info(`♻️ Rescheduled: ${channel_name}`);
             } else {
                 await removeChannelScheduler(channel_name);
             }

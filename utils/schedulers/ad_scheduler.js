@@ -3,6 +3,7 @@ import {redis} from "../../redis.js";
 import {sql} from "../../database/db.js";
 import {bot} from "../../main.js";
 
+
 const QUEUE_NAME = 'channel-ads';
 
 // 1. Initialize the Queue
@@ -32,7 +33,7 @@ export const sendAds = async () => {
     for (const ad of rows) {
         await sendAd(ad)
     }
-    console.log("✅ All ads initialized")
+
 }
 
 export const sendAd = async (ad) => {

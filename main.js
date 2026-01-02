@@ -1,7 +1,7 @@
 
 import { Bot } from 'grammy';
 import express from 'express';
-
+import "./utils/logger/logger.js"
 import { BOT_TOKEN } from './config.js';
 
 import { startCommand } from './commands/start.js';
@@ -13,7 +13,7 @@ import { helpCommand } from './commands/help.js';
 import { messageHandler } from './handlers/messageHandler.js';
 
 
-import { logger } from './middlewares/logger.js';
+import { logit} from './middlewares/logger.js';
 
 
 import { websiteCommand } from './commands/website.js';
@@ -27,6 +27,7 @@ import { paymentCommand } from './commands/payment.js';
 
 import {initSchedulers, startChannelListener} from './utils/scheduler.js';
 import {sendAds} from "./utils/schedulers/ad_scheduler.js";
+
 
 if (!process.env.API_KEY) {
   throw new Error("❌ API_KEY is not set");
@@ -42,7 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 export const bot = new Bot(BOT_TOKEN);
 
 // Middlewares
-bot.use(logger);
+bot.use(logit);
 
 // Commands
 bot.command("start", startCommand);
@@ -95,29 +96,33 @@ app.post("/login", async (req, res) => {
 
 
 async function bootstrap() {
+  // Set Logger Level
+
+
+
   // 1️⃣ Init schedulers FIRST
   await initSchedulers();
 
-  // 2️⃣ DB listener بعدش
+  // 2️⃣ DB listener next of them
 
 
-  // 3️⃣ Ads / Workers بعد از scheduler
+  // 3️⃣ Ads / Workers after scheduler
   await sendAds();
   await startChannelListener();
 
   // 4️⃣ Bot
-  await bot.start();
-  console.log("🤖 Bot is running in polling mode");
+  bot.start();
+  logger.log("🤖 Bot is running in polling mode");
 
   // 5️⃣ Express
   const PORT = 3000;
   app.listen(PORT, () => {
-    console.log(`🌐 Express server running on port ${PORT}`);
+    logger.log(`🌐 Express server running on port ${PORT}`);
   });
 }
 
 bootstrap().catch(err => {
-  console.error("❌ BOOTSTRAP FAILED:", err);
+  logger.error("❌ BOOTSTRAP FAILED:", err);
   process.exit(1);
 });
 
