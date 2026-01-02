@@ -64,7 +64,7 @@ bot.callbackQuery("payment_method", async (ctx) => {
 
 // Message Handler
 bot.on("message", async (ctx) => {
-  messageHandler(ctx);
+  await messageHandler(ctx);
 })
 
 
@@ -106,7 +106,7 @@ async function bootstrap() {
   await startChannelListener();
 
   // 4️⃣ Bot
-  bot.start();
+  await bot.start();
   console.log("🤖 Bot is running in polling mode");
 
   // 5️⃣ Express
