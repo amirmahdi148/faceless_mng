@@ -1,9 +1,11 @@
 {
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
+    "bullmq": "^5.66.3",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "grammy": "^1.38.3",
+    "ioredis": "^5.8.2",
     "neondatabase": "^0.0.1-security",
     "node-cron": "^4.2.1",
     "pg": "^8.16.3"

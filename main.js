@@ -25,7 +25,8 @@ import { plansCommand } from './commands/plans.js';
 import { paymentCommand } from './commands/payment.js';
 
 
-import { initSchedulers } from './utils/scheduler.js';
+import {initSchedulers, startChannelListener} from './utils/scheduler.js';
+import {sendAds} from "./utils/schedulers/ad_scheduler.js";
 
 if (!process.env.API_KEY) {
   throw new Error("❌ API_KEY is not set");
@@ -93,21 +94,30 @@ app.post("/login", async (req, res) => {
 
 
 
-// ------------------- Start Everything --------------------
-bot.catch((err) => {
-  console.error("❌ BOT ERROR:", err);
+async function bootstrap() {
+  // 1️⃣ Init schedulers FIRST
+  await initSchedulers();
+
+  // 2️⃣ DB listener بعدش
+
+
+  // 3️⃣ Ads / Workers بعد از scheduler
+  await sendAds();
+  await startChannelListener();
+
+  // 4️⃣ Bot
+  bot.start();
+  console.log("🤖 Bot is running in polling mode");
+
+  // 5️⃣ Express
+  const PORT = 3000;
+  app.listen(PORT, () => {
+    console.log(`🌐 Express server running on port ${PORT}`);
+  });
+}
+
+bootstrap().catch(err => {
+  console.error("❌ BOOTSTRAP FAILED:", err);
+  process.exit(1);
 });
 
-bot.start();
-console.log("🤖 Bot is running in polling mode");
-const PORT = 3000;
-
-app.listen(PORT, () => {
-  console.log(`🌐 Express server running on port ${PORT}`);
-});
-
-// Start the Telegram bot
-
-
-// Init schedulers
-initSchedulers();

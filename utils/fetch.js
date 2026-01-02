@@ -10,7 +10,7 @@ export const headers = {
 export function extractUrl(text) {
   const regex = /(https?:\/\/[^\s]+)/g;
   const matches = text.match(regex);
-  return matches ? matches[0] : null;
+  return matches || [];
 }
 
 export const urls = [
